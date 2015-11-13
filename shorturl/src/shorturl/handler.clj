@@ -3,8 +3,11 @@
             [compojure.route :as route]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]))
 
+(defn index []
+  "Hallo Wunderdog!")
+
 (defroutes app-routes
-  (GET "/" [] "Hello World")
+  (GET "/" [] (index))
   (route/not-found "Not Found"))
 
 (def app

@@ -22,12 +22,10 @@ First clone the repo:
 
     git clone https://<username>@bitbucket.org/wunderdogsw/clojureworkshop.git
 
-### Step 1
-Create new compojure project
+### Step 1 - Create new compojure project
     lein new compojure shorturl
 
-### Step 2
-Create/import project to IDE
+### Step 2 - Create/import project to an IDE
 
 #### IDEA
 * Create new project
@@ -40,5 +38,29 @@ Create/import project to IDE
                         [ring/ring-mock "0.3.0"]
                         [midje "1.6.0" :exclusions [org.clojure/clojure]]]
          :plugins [[lein-midje "3.1.3"]]}}
-  5. Project directory right click -> Create REPL
-  6. Project directory right click -> Run REPL
+  5. Project directory right click -> Create REPL for shorturl
+  6. Project directory right click -> Run REPL for shorturl
+  7. Play with REPL
+
+### Step 3 - Setup live editing and start server
+* Setup remote REPL in `project.clj` by adding following key pair to `:ring´
+    :nrepl {:start? true
+            :port 8888}
+* Start server in terminal
+    lein ring server-headless
+* Check your service from a browser http://localhost:3000
+* Remote to server
+  * Edit configurations...
+  * Host: localhost
+  * Port: 8888
+  * Click OK to open new REPL
+* In `shorturl.handler` create a function that returns a string and use that function in the default route
+  * Check your server response in a browser
+* Reload context in REPL (only needed when adding/removing stuff)
+    (use 'shorturl.handler :reload-all)
+* Change current namespace in REPL
+    (in-ns 'shorturl.handler)
+* Redefine your function and check your server response again
+
+
+
