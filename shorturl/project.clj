@@ -9,4 +9,8 @@
   :ring {:handler shorturl.handler/app}
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
-                        [ring/ring-mock "0.3.0"]]}})
+                        [ring/ring-mock "0.3.0"]
+                        [midje "1.6.0" :exclusions [org.clojure/clojure]]]
+         :plugins [[lein-midje "3.1.3"]
+                   [lein-kibit "0.1.2"]
+                   [lein-auto "0.1.2"]]}})
