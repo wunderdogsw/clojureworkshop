@@ -73,3 +73,13 @@ First clone the repo:
     (GET "/" [] (c/index))
 * Check that the server still works (also REPL might need a context reload)
 
+### Step 5 - Add midje test for core
+* Create a file `core_test.clj` under `test/shorturl`
+  * Underscore in filename translates to a dash in namespace name
+* Add following dependencies to the test namespace
+    (:use midje.sweet)
+    (:require [shorturl.core :refer :all])
+* Create a test
+  (fact "index returns a greeting"
+      (index) => "Hallo Wunderdog!")
+* Check your autotest window
