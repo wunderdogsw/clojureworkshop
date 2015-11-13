@@ -1,6 +1,8 @@
 (ns shorturl.core
   (:require [pandect.algo.sha1 :refer [sha1]]))
 
+(def urls (atom {}))
+
 (def url-regex
   "Adaptation from http://stackoverflow.com/a/15518889/1790621"
   (re-pattern
@@ -17,3 +19,6 @@
 
 (defn valid-url? [input]
   (not (nil? (re-find url-regex input))))
+
+(defn store-url [short url]
+  (swap! urls #(assoc % short url)))

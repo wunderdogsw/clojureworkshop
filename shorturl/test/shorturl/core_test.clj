@@ -14,3 +14,10 @@
        (fact (valid-url? "https://wunder.dog") => true)
        (fact (valid-url? "gaa") => false)
        (fact (valid-url? "http://") => false))
+
+(against-background [(before :contents (reset! urls {})
+                             :after (reset! urls {}))]
+  (facts "store URLs"
+         (fact (store-url "test" "http://goo.gl") => (just {"test" "http://goo.gl"}))
+         (fact (store-url "other" "http://wunder.dog") => (just {"test" "http://goo.gl"
+                                                                 "other" "http://wunder.dog"}))))

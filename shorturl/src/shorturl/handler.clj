@@ -10,7 +10,10 @@
     (let [params (:params request)
           url (:url params)]
       (if (c/valid-url? url)
-        (c/create-short-url url)
+        (let [result (c/create-short-url url)]
+          (do
+            (c/store-url result url)
+            result))
         {:status 400 :headers {} :body "Invalid URL"})))
 
   (route/not-found "Not Found"))

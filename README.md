@@ -147,3 +147,21 @@ curl --data "url=http://wunderdog.fi" http://localhost:3000/new
 * Create the actual function in `core`
 * Mark sha1 creation function as private with `defn-` and remove its tests
 * Replace the old function with the new one in `handler`
+
+### Step 10 - Save links to an atom
+* Define urls as an empty map atom
+```
+(def urls (atom {}))
+```
+* Create tests that check adding new key values to the map
+    * Put `against-background` state reset before the test cases
+```
+(against-background [(before :contents (reset! urls {}))]
+  facts...)
+```
+* Implement a function that updates the `urls`
+    * Atoms are updated with `swap!` that takes the name of the atom and a function that updates its value
+    * Hint: use anonymous function with `assoc` as the update function
+    * You can check the contents of an atom with deref function or @ shorthand (eg. `@urls`)
+* In `handler` update the `/new` call so that it stores the value and then returns it
+    * `do` function is used for imperative style one statement after another execution. It also implies side effects happening inside it.
