@@ -14,6 +14,10 @@ Leiningen http://leiningen.org/
 * Vim + fireplace https://github.com/tpope/vim-fireplace
 
 #### Leiningen
+Like Maven but better.
+
+### Clojure documentation
+* Guide and search for core functions and forms http://conj.io/
 
 ## Tutorial
 
@@ -116,3 +120,16 @@ lein ring server-headless
     * Apply the function to the bytes of given string
         * Java interop Lesson 1 - using methods: `(.getBytes str)`
 
+### Step 7 - Create a POST endpoint
+* Disable anti-forgery from default settings in `app` definition
+    * You can change things in a map easily with `assoc-in`
+    * Restart the server
+* Add a POST endpoint to `app-routes`
+    * You can name the parameter after `"/new"` as request. It is a map.
+    * Request parameters can be extracted with :params. This is a map as well.
+    * `let` form is a good match for this kind of a task
+    * Extracted URL parameter can then be passed on to your sha function
+    * Curl your new endpoint
+```
+curl --data "url=http://wunderdog.fi" http://localhost:3000/new
+```
