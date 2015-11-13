@@ -133,3 +133,11 @@ lein ring server-headless
 ```
 curl --data "url=http://wunderdog.fi" http://localhost:3000/new
 ```
+
+### Step 8 - Validate link with regex
+* Create test cases for URL validation function
+* Define `re-pattern` in start of core that validates a string is an URL
+    * Eg. http://stackoverflow.com/a/15518889/1790621
+* Implement a function that validates given input
+* Create test cases in `handler-test` for valid and invalid input
+* Fix the endpoint to match new tests

@@ -3,6 +3,9 @@
             [ring.mock.request :as mock]
             [shorturl.handler :refer :all]))
 
+(defn new-post-request [url]
+  (mock/request :post "/new" {:url url}))
+
 (deftest test-app
   ;(testing "main route"
   ;  (let [response (app (mock/request :get "/"))]
@@ -11,4 +14,13 @@
 
   (testing "not-found route"
     (let [response (app (mock/request :get "/invalid"))]
-      (is (= (:status response) 404)))))
+      (is (= (:status response) 404))))
+
+  (testing "input new valid URL"
+    (let [response (app (new-post-request "http://wun.dog"))]
+      (is (= (:status response) 200))))
+
+  (testing "input new valid URL"
+    (let [response (app (new-post-request "gaa"))]
+      (is (= (:status response) 400))
+      (is (= (:body response) "Invalid URL")))))

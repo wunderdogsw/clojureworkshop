@@ -9,7 +9,9 @@
   (POST "/new" request
     (let [params (:params request)
           url (:url params)]
-      (c/link->sha url)))
+      (if (c/valid-url? url)
+        (c/link->sha url)
+        {:status 400 :headers {} :body "Invalid URL"})))
 
   (route/not-found "Not Found"))
 
