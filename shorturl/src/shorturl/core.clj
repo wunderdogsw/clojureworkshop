@@ -9,8 +9,11 @@
 (defn index []
   "Hallo Wunderdog!")
 
-(defn link->sha [link]
-  (sha1 (.getBytes link)))
+(defn- link->sha [url]
+  (sha1 (.getBytes url)))
+
+(defn create-short-url [url]
+  (subs (link->sha url) 0 7))
 
 (defn valid-url? [input]
   (not (nil? (re-find url-regex input))))

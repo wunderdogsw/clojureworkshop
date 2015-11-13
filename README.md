@@ -141,3 +141,9 @@ curl --data "url=http://wunderdog.fi" http://localhost:3000/new
 * Implement a function that validates given input
 * Create test cases in `handler-test` for valid and invalid input
 * Fix the endpoint to match new tests
+
+### Step 9 - Return a short URL instead of full sha1
+* Create test cases for a new function that returns a 7 character substring of the full value returned by sha1 creation function
+* Create the actual function in `core`
+* Mark sha1 creation function as private with `defn-` and remove its tests
+* Replace the old function with the new one in `handler`
