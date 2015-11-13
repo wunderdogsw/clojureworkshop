@@ -31,6 +31,9 @@ First clone the repo:
 * Create new project
     * Select clojure
     - [ ] clojure 1.7 jar?
+* Disable structural editing if you are not used to it
+    * IDEA: Settings > Editor > General > Smart Keys > Use structural editing
+    * Emacs: disable-paredit-mode
 * Open project.clj
 * Leiningen project not registered -> Add project
 * Add midje as dev dependency
@@ -62,7 +65,7 @@ lein ring server-headless
     * Click OK to open new REPL
 * In `shorturl.handler` create a function that returns a string and use that function in the default route
     * Check your server response in a browser
-* Reload context in REPL (only needed when adding/removing stuff)
+* Reload context in REPL (only needed when adding/removing definitions)
 ```
     (use 'shorturl.handler :reload-all)
 ```
@@ -79,7 +82,7 @@ lein ring server-headless
 (ns shorturl.core)
 ```
 * Move your greeting function from handler to core
-    * Remember to require the new namespace in `handler` `[shorturl.core :as c]`	
+    * Remember to require the new namespace in `handler` `[shorturl.core :as c]`
     * Fix the function call `(GET "/" [] (c/index))`
 * Check that the server still works (also REPL might need a context reload)
 
@@ -98,3 +101,18 @@ lein ring server-headless
   (index) => "Hallo Wunderdog!")
 ```
 * Check your autotest window
+
+### Step 6 - Creating a sha1 from a string
+* This is a good time to disable `testing "main route"` in `handler-test` if you haven't already done so
+* Add `[pandect "0.5.4"]` to project dependecies
+* To update dependencies restart server and reconnect
+* Restart midje autotest process as well
+* Create facts in `core-test`
+    * Hint: by convention transforming something to something else is named like this: `input->output`
+    * Hashing `http://wunderdog.fi` should return `833e0acc54d46345120b2792de864bc4c623289b`
+    * Hashing `http://goo.gl` should return `84704b78419ab3cecdce8251a702be1676e1622d`
+* Create a function that fulfills the tests
+    * Require `sha1` function from `pandect.algo.sha1` in `core` namespace
+    * Apply the function to the bytes of given string
+        * Java interop Lesson 1 - using methods: `(.getBytes str)`
+
