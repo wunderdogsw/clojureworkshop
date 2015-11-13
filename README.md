@@ -21,12 +21,14 @@ Like Maven but better.
 
 ## Tutorial
 
-### Step 0
-First clone the repo:
-
+### Step 0 - Clone the repo and go to beginning
     git clone https://<username>@bitbucket.org/wunderdogsw/clojureworkshop.git
+    git checkout -b tutorial step_0
+    rm -fr shorturl
 
-### Step 1 - Create new compojure project
+TODO is that correct?
+
+### Step 1 - Create a new compojure project
     lein new compojure shorturl
 
 ### Step 2 - Create/import project to an IDE
@@ -137,7 +139,7 @@ curl --data "url=http://wunderdog.fi" http://localhost:3000/new
 ### Step 8 - Validate link with regex
 * Create test cases for URL validation function
 * Define `re-pattern` in start of core that validates a string is an URL
-    * Eg. http://stackoverflow.com/a/15518889/1790621
+    * Eg. `"^https?://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"`
 * Implement a function that validates given input
 * Create test cases in `handler-test` for valid and invalid input
 * Fix the endpoint to match new tests
@@ -165,3 +167,18 @@ curl --data "url=http://wunderdog.fi" http://localhost:3000/new
     * You can check the contents of an atom with deref function or @ shorthand (eg. `@urls`)
 * In `handler` update the `/new` call so that it stores the value and then returns it
     * `do` function is used for imperative style one statement after another execution. It also implies side effects happening inside it.
+
+### Step 11 - Create retrieval of a stored URL
+* Create retreve-url function in `core` and matching tests
+    * Hint: To get a value from an atom just deref it `(get @urls input-value)`
+    * This returns `nil` if nothing is found
+* Add at least fail test case to `handler-test` and create new get endpoint that returns found URL or 404
+* This is what it should look like
+```
+$ curl --data "url=https://wunder.dog" http://localhost:3000/new
+12cee14
+$ curl http://localhost:3000/12cee14
+https://wunder.dog
+$ curl http://localhost:3000/nothere
+No URL found with 'test'
+```

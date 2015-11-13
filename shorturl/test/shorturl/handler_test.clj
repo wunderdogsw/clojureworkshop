@@ -23,4 +23,11 @@
   (testing "input new valid URL"
     (let [response (app (new-post-request "gaa"))]
       (is (= (:status response) 400))
-      (is (= (:body response) "Invalid URL")))))
+      (is (= (:body response) "Invalid URL"))))
+
+  ;TODO success case?
+
+  (testing "try to retrieve URL with non-existing short string"
+    (let [response (app (mock/request :get "/gaa"))]
+      (is (= (:status response) 404))
+      (is (= (:body response) "No URL found with 'gaa'")))))

@@ -15,6 +15,10 @@
             (c/store-url result url)
             result))
         {:status 400 :headers {} :body "Invalid URL"})))
+  (GET "/:short" [short]
+    (if-let [url (c/retrieve-url short)]
+      url
+      {:status 404 :headers {} :body (str "No URL found with '" short "'")}))
 
   (route/not-found "Not Found"))
 

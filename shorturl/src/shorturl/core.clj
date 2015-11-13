@@ -22,3 +22,6 @@
 
 (defn store-url [short url]
   (swap! urls #(assoc % short url)))
+
+(defn retrieve-url [short]
+  (get @urls short))

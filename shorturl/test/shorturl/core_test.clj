@@ -21,3 +21,9 @@
          (fact (store-url "test" "http://goo.gl") => (just {"test" "http://goo.gl"}))
          (fact (store-url "other" "http://wunder.dog") => (just {"test" "http://goo.gl"
                                                                  "other" "http://wunder.dog"}))))
+
+(against-background [(before :contents (reset! urls {"test" "http://wunder.dog"})
+                             :after (reset! urls {}))]
+  (facts "retrieve URL"
+         (fact (retrieve-url "test") => "http://wunder.dog")
+         (fact (retrieve-url "not-there") => nil)))
