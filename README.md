@@ -62,5 +62,14 @@ First clone the repo:
     (in-ns 'shorturl.handler)
 * Redefine your function and check your server response again
 
-
+### Step 4 - Create a new namespace
+* Create a file `core.clj` under `src/shorturl`
+* Name the namespace at the beginning of the file
+    (ns shorturl.core)
+* Move your greeting function from handler to core
+  * Remember to require the new namespace in `handler`
+    [shorturl.core :as c]
+  * Fix the function call
+    (GET "/" [] (c/index))
+* Check that the server still works (also REPL might need a context reload)
 
