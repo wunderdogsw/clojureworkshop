@@ -18,6 +18,7 @@ Like Maven but better.
 
 ### Clojure documentation
 * Guide and search for core functions and forms http://conj.io/
+* Style guide https://github.com/bbatsov/clojure-style-guide
 
 ## Tutorial
 
@@ -42,16 +43,26 @@ TODO is that correct?
     * Emacs: disable-paredit-mode
 * Open project.clj
 * Leiningen project not registered -> Add project
-* Add midje as dev dependency
+* Add midje as dev dependency and midje lein-midje, lein-kibit and lein-auto as dev plugin
 ```
 {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                       [ring/ring-mock "0.3.0"]
                       [midje "1.6.0" :exclusions [org.clojure/clojure]]]
-       :plugins [[lein-midje "3.1.3"]]}}
+       :plugins [[lein-midje "3.1.3"]
+                 [lein-kibit "0.1.2"]
+                 [lein-auto "0.1.2"]]}}
 ```
 * Project directory right click -> Create REPL for shorturl
 * Project directory right click -> Run REPL for shorturl
 * Play with REPL
+* Start a new kibit autotest process in a terminal
+```
+lein auto kibit
+```
+* Start a new midje autotest process in a terminal (yes, midje works without lein-auto)
+```
+lein midje :autotest
+```
 
 ### Step 3 - Setup live editing and start server
 * Setup remote REPL in `project.clj` by adding following key pair to `:ring´
