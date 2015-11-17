@@ -1,4 +1,4 @@
-# CLojure workshop
+# Clojure workshop
 
 ## Preparation
 
