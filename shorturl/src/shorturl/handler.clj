@@ -11,9 +11,8 @@
           url (:url params)]
       (if (c/valid-url? url)
         (let [result (c/create-short-url url)]
-          (do
-            (c/store-url result url)
-            result))
+          (c/store-url result url)
+          result)
         {:status 400 :headers {} :body "Invalid URL"})))
   (GET "/:short" [short]
     (if-let [url (c/retrieve-url short)]
