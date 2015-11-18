@@ -169,7 +169,8 @@ curl --data "url=http://wunderdog.fi" http://localhost:3000/new
 * Create tests that check adding new key values to the map
     * Put `against-background` state reset before the test cases
 ```
-(against-background [(before :contents (reset! urls {}))]
+(against-background [(before :contents (reset! urls {})
+                             :after (reset! urls {}))]
   facts...)
 ```
 * Implement a function that updates the `urls`
