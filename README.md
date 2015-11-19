@@ -237,3 +237,12 @@ ALTER TABLE urls OWNER TO demo;
 ```
     * In implementation you'll need at least `defdb` and `postgres` from `korma.db` and `defentity fields insert select where values` from `korma.core`
     * Read http://sqlkorma.com/docs for examples
+
+### Step 13 - Redirect and serve static files
+* Make the short URL address to redirect when address is found. There is a `redirect` function in `ring.util.response` namespace.
+* Then create `404.html` file in `resources/public` directory
+* You can also create css file under `public` eg. `resources/public/styles/shorturl.css` and then link to it in HTML `<link rel="stylesheet" href="styles/shorturl.css"/>` 
+* Add `(route/resources "/")` to defroutes to map `resources/public` directory to root in URL
+* Then modify `not-found` and failed short URL address to return appropriate HTML content
+    * Hint: `slurp` reads different sources and returns the content as a string
+    * Hint: You can use `clojure.java.io/resource` to access the static files

@@ -2,7 +2,20 @@
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
-            [shorturl.core :as c]))
+            [ring.util.response :refer [redirect]]
+            [shorturl.core :as c]
+            [clojure.java.io :as io]))
+
+(defn get-static-file-contents [path]
+  (slurp (io/resource path)))
+
+(defn not-found-content []
+  (get-static-file-contents "public/404.html"))
+
+(def not-found-response
+  {:status 404
+   :headers {"Content-Type" "text/html; charset=utf-8"}
+   :body (not-found-content)})
 
 (defroutes app-routes
   (GET "/" [] (c/index))
@@ -16,10 +29,10 @@
         {:status 400 :headers {} :body "Invalid URL"})))
   (GET "/:short" [short]
     (if-let [url (c/retrieve-url-from-db short)]
-      url
-      {:status 404 :headers {} :body (str "No URL found with '" short "'")}))
-
-  (route/not-found "Not Found"))
+      (redirect url)
+      not-found-response))
+  (route/resources "/")
+  (route/not-found (not-found-content)))
 
 (def app
   (wrap-defaults app-routes
