@@ -1,0 +1,18 @@
+DROP USER IF EXISTS demo;
+
+CREATE USER demo WITH PASSWORD 'demopass';
+
+DROP SEQUENCE IF EXISTS urls_row_num_seq;
+
+CREATE SEQUENCE urls_row_num_seq CYCLE;
+
+ALTER SEQUENCE urls_row_num_seq OWNER TO demo;
+
+DROP TABLE IF EXISTS urls;
+
+CREATE TABLE urls (
+        id int NOT NULL default nextval('urls_row_num_seq'),
+        short varchar(32) NOT NULL,
+        full_url varchar(2048) NOT NULL);
+
+ALTER TABLE urls OWNER TO demo;
