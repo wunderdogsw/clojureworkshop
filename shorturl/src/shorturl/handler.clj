@@ -11,11 +11,11 @@
           url (:url params)]
       (if (c/valid-url? url)
         (let [result (c/create-short-url url)]
-          (c/store-url result url)
+          (c/store-url-to-db result url)
           result)
         {:status 400 :headers {} :body "Invalid URL"})))
   (GET "/:short" [short]
-    (if-let [url (c/retrieve-url short)]
+    (if-let [url (c/retrieve-url-from-db short)]
       url
       {:status 404 :headers {} :body (str "No URL found with '" short "'")}))
 

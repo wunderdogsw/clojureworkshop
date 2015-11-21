@@ -1,5 +1,6 @@
 (ns shorturl.core
-  (:require [pandect.algo.sha1 :refer [sha1]]))
+  (:require [pandect.algo.sha1 :refer [sha1]]
+            [shorturl.db :as db]))
 
 (def urls (atom {}))
 
@@ -25,3 +26,13 @@
 
 (defn retrieve-url [short]
   (get @urls short))
+
+(defn retrieve-url-from-db [short]
+  (let [results (db/find-by-short short)]
+    (when-not (empty? results)
+      (:full_url (first results)))))
+
+(defn store-url-to-db [short url]
+  (if-not (retrieve-url-from-db short)
+    (db/insert-url short url)))
+

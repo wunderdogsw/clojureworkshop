@@ -194,3 +194,46 @@ https://wunder.dog
 $ curl http://localhost:3000/nothere
 No URL found with 'test'
 ```
+
+### Step 12 - Store data in database
+* Create database and table in PostgreSQL
+    * Database can be created eg. from command line: `createdb shorturl`
+    * The script `db/create_user_and_table.postgresql` can be found with tag `step_12_preparation`. Here is its contents:
+```
+DROP USER IF EXISTS demo;
+
+CREATE USER demo WITH PASSWORD 'demopass';
+
+DROP SEQUENCE IF EXISTS urls_row_num_seq;
+
+CREATE SEQUENCE urls_row_num_seq CYCLE;
+
+ALTER SEQUENCE urls_row_num_seq OWNER TO demo;
+
+DROP TABLE IF EXISTS urls;
+
+CREATE TABLE urls (
+        id int NOT NULL default nextval('urls_row_num_seq'),
+        short varchar(32) NOT NULL,
+        full_url varchar(2048) NOT NULL);
+
+ALTER TABLE urls OWNER TO demo;
+```
+    * Run the script with `psql -f db/create_user_and_table.postgresql shorturl`
+
+* Create tests and implementation to a new namespace `shorturl.db`
+    * Add `[korma "0.4.2"]` and `[org.postgresql/postgresql "9.4-1205-jdbc42"]` to project dependecies
+    * In tests you can use the following code to rollback tests that change the data
+```
+(defn with-rollback
+  "Test fixture for executing a test inside a database transaction
+  that rolls back at the end so that database tests can remain isolated"
+  [test-fn]
+  (korma.db/transaction
+    (test-fn)
+    (korma.db/rollback)))
+
+(use-fixtures :each with-rollback)
+```
+    * In implementation you'll need at least `defdb` and `postgres` from `korma.db` and `defentity fields insert select where values` from `korma.core`
+    * Read http://sqlkorma.com/docs for examples
