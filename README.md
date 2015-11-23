@@ -4,8 +4,10 @@
 
 ### Requirements
 TODO
-Java JDK (at least version 6) http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
-Leiningen http://leiningen.org/
+* Java JDK (at least version 6) http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+* Leiningen http://leiningen.org/
+* PostgreSQL http://www.postgresql.org/
+    * `brew install postgresql`
 
 #### IDEs + extensions
 * IntelliJ IDEA + Cursive https://cursiveclojure.com/
@@ -17,8 +19,10 @@ Leiningen http://leiningen.org/
 Like Maven but better.
 
 ### Clojure documentation
+* Official site http://clojure.org/
 * Guide and search for core functions and forms http://conj.io/
 * Style guide https://github.com/bbatsov/clojure-style-guide
+* A categorised directory of libraries and tools for Clojure http://www.clojure-toolbox.com/
 
 ## Tutorial
 
@@ -182,8 +186,8 @@ curl --data "url=http://wunderdog.fi" http://localhost:3000/new
 
 ### Step 11 - Create retrieval of a stored URL
 * Create retreve-url function in `core` and matching tests
-    * Hint: To get a value from an atom just deref it `(get @urls input-value)`
-    * This returns `nil` if nothing is found
+    * Hint: To access a value from an atom just deref it and then use it as you normally would `(get @urls input-value)`
+    * Get from a map returns `nil` if nothing is found
 * Add at least fail test case to `handler-test` and create new get endpoint that returns found URL or 404
 * This is what it should look like
 ```
@@ -198,7 +202,7 @@ No URL found with 'test'
 ### Step 12 - Store data in database
 * Create database and table in PostgreSQL
     * Database can be created eg. from command line: `createdb shorturl`
-    * The script `db/create_user_and_table.postgresql` can be found with tag `step_12_preparation`. Here is its contents:
+    * The script `db/create_user_and_table.postgresql` can be found with tag `step_12_preparation`. Here is its content:
 ```
 DROP USER IF EXISTS demo;
 
@@ -219,11 +223,12 @@ CREATE TABLE urls (
 
 ALTER TABLE urls OWNER TO demo;
 ```
-    * Run the script with `psql -f db/create_user_and_table.postgresql shorturl`
+
+* Run the script with `psql -f db/create_user_and_table.postgresql shorturl`
 
 * Create tests and implementation to a new namespace `shorturl.db`
     * Add `[korma "0.4.2"]` and `[org.postgresql/postgresql "9.4-1205-jdbc42"]` to project dependecies
-    * In tests you can use the following code to rollback tests that change the data
+    * In tests you can use the following code to rollback after tests that change the data
 ```
 (defn with-rollback
   "Test fixture for executing a test inside a database transaction
@@ -235,13 +240,14 @@ ALTER TABLE urls OWNER TO demo;
 
 (use-fixtures :each with-rollback)
 ```
-    * In implementation you'll need at least `defdb` and `postgres` from `korma.db` and `defentity fields insert select where values` from `korma.core`
-    * Read http://sqlkorma.com/docs for examples
+
+* In implementation you'll need at least `defdb` and `postgres` from `korma.db` and `defentity fields insert select where values` from `korma.core`
+* Read http://sqlkorma.com/docs for examples
 
 ### Step 13 - Redirect and serve static files
 * Make the short URL address to redirect when address is found. There is a `redirect` function in `ring.util.response` namespace.
 * Then create `404.html` file in `resources/public` directory
-* You can also create css file under `public` eg. `resources/public/styles/shorturl.css` and then link to it in HTML `<link rel="stylesheet" href="styles/shorturl.css"/>` 
+* You can also create css file under `public` eg. `resources/public/styles/shorturl.css` and then link to it in HTML `<link rel="stylesheet" href="styles/shorturl.css"/>`
 * Add `(route/resources "/")` to defroutes to map `resources/public` directory to root in URL
 * Then modify `not-found` and failed short URL address to return appropriate HTML content
     * Hint: `slurp` reads different sources and returns the content as a string
