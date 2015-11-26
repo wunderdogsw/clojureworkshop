@@ -6,3 +6,7 @@ body.not-found h1 {
     color: red;
     font-size: 32px;
 }
+
+.all-urls li {
+    list-style: none;
+}

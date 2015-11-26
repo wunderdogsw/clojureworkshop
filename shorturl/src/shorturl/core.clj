@@ -36,3 +36,6 @@
   (if-not (retrieve-url-from-db short)
     (db/insert-url short url)))
 
+(defn get-all-urls []
+  (db/get-all-urls))
+

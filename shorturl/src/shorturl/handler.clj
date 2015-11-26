@@ -4,6 +4,7 @@
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [ring.util.response :refer [redirect]]
             [shorturl.core :as c]
+            [shorturl.html :as h]
             [clojure.java.io :as io]))
 
 (defn get-static-file-contents [path]
@@ -18,7 +19,7 @@
    :body (not-found-content)})
 
 (defroutes app-routes
-  (GET "/" [] (c/index))
+  (GET "/" [] (h/index (c/get-all-urls)))
   (POST "/new" request
     (let [params (:params request)
           url (:url params)]

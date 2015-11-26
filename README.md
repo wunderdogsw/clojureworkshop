@@ -252,3 +252,13 @@ ALTER TABLE urls OWNER TO demo;
 * Then modify `not-found` and failed short URL address to return appropriate HTML content
     * Hint: `slurp` reads different sources and returns the content as a string
     * Hint: You can use `clojure.java.io/resource` to access the static files
+
+### Step 14 - Dynamic HTML with Hiccup
+* Add `[hiccup "1.0.5"]` to project dependecies
+* Create a new namespace for html generation and change the `"/"` handler to use a function from there instead of the `c/index`
+* First create a form with text input, action to `/new` and a submit button
+    * Use functions in `hiccup.form` and `hiccup.page`
+    * API can be found here http://weavejester.github.io/hiccup/index.html
+* Next create a new function in `db` to retrieve all rows from `urls` and use that as an input to the function created in previous bullet
+* With this input create a list of short urls to their respective full urls and make them clickable links
+    * Put the list under the form

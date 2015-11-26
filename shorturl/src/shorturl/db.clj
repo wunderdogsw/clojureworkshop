@@ -20,3 +20,8 @@
   (insert urls
     (values {:short short
              :full_url full})))
+
+(defn get-all-urls []
+  (into {}
+        (map (juxt :short :full_url)
+             (select urls))))
