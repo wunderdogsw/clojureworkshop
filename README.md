@@ -4,6 +4,7 @@
 
 ### Requirements
 TODO
+
 * Java JDK (at least version 6) http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 * Leiningen http://leiningen.org/
 * PostgreSQL http://www.postgresql.org/
@@ -48,7 +49,7 @@ TODO is that correct?
 * Open project.clj
 * Leiningen project not registered -> Add project
 * Add midje as dev dependency and midje lein-midje, lein-kibit and lein-auto as dev plugin
-```
+```clojure
 {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                       [ring/ring-mock "0.3.0"]
                       [midje "1.6.0" :exclusions [org.clojure/clojure]]]
@@ -70,7 +71,7 @@ lein midje :autotest
 
 ### Step 3 - Setup live editing and start server
 * Setup remote REPL in `project.clj` by adding following key pair to `:ring´
-```
+```clojure
 :nrepl {:start? true
         :port 8888}
 ```
@@ -87,11 +88,11 @@ lein ring server-headless
 * In `shorturl.handler` create a function that returns a string and use that function in the default route
     * Check your server response in a browser
 * Reload context in REPL (only needed when adding/removing definitions)
-```
-    (use 'shorturl.handler :reload-all)
+```clojure
+(use 'shorturl.handler :reload-all)
 ```
 * Change current namespace in REPL
-```
+```clojure
 (in-ns 'shorturl.handler)
 ```
 * Redefine your function and check your server response again
@@ -99,7 +100,7 @@ lein ring server-headless
 ### Step 4 - Create a new namespace
 * Create a file `core.clj` under `src/shorturl`
 * Name the namespace at the beginning of the file
-```
+```clojure
 (ns shorturl.core)
 ```
 * Move your greeting function from handler to core
@@ -111,13 +112,13 @@ lein ring server-headless
 * Create a file `core_test.clj` under `test/shorturl`
     * Underscore in filename translates to a dash in namespace name
 * Add following dependencies to the test namespace
-```
+```clojure
 (:use midje.sweet)
 (:require [shorturl.core :refer :all])
 ```
 
 * Create a test
-```
+```clojure
 (fact "index returns a greeting"
   (index) => "Hallo Wunderdog!")
 ```
@@ -167,12 +168,12 @@ curl --data "url=http://wunderdog.fi" http://localhost:3000/new
 
 ### Step 10 - Save links to an atom
 * Define urls as an empty map atom
-```
+```clojure
 (def urls (atom {}))
 ```
 * Create tests that check adding new key values to the map
     * Put `against-background` state reset before the test cases
-```
+```clojure
 (against-background [(before :contents (reset! urls {})
                              :after (reset! urls {}))]
   facts...)
@@ -203,7 +204,7 @@ No URL found with 'test'
 * Create database and table in PostgreSQL
     * Database can be created eg. from command line: `createdb shorturl`
     * The script `db/create_user_and_table.postgresql` can be found with tag `step_12_preparation`. Here is its content:
-```
+```sql
 DROP USER IF EXISTS demo;
 
 CREATE USER demo WITH PASSWORD 'demopass';
@@ -229,7 +230,7 @@ ALTER TABLE urls OWNER TO demo;
 * Create tests and implementation to a new namespace `shorturl.db`
     * Add `[korma "0.4.2"]` and `[org.postgresql/postgresql "9.4-1205-jdbc42"]` to project dependecies
     * In tests you can use the following code to rollback after tests that change the data
-```
+```clojure
 (defn with-rollback
   "Test fixture for executing a test inside a database transaction
   that rolls back at the end so that database tests can remain isolated"
