@@ -286,9 +286,9 @@ lein midje :autotest
 
 ### Theory - Running things
 * Our example web application stack goes like this:
-   * Jetty
-   * ring - HTTP server abstraction
-   * Compojure - A concise routing library for Ring/Clojure
+    * Jetty
+    * ring - HTTP server abstraction
+    * Compojure - A concise routing library for Ring/Clojure
 
 
 ### Practice - Setup live editing and start server
