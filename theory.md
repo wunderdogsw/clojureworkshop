@@ -10,6 +10,8 @@
 * Clojure is not a pure functional language (like Haskell)
 * Emphasis on immutable data structures: list, vector, set, map...
 * Emphasis on recursion rather than looping
+* Dynamically typed
+* Lazy evaluation
 
 * Clojure provides easy access to the Java frameworks, with optional type hints and type inference, to ensure that calls to Java can avoid reflection.
 
@@ -449,6 +451,31 @@ keymap ; => {:a 1, :b 2, :c 3}
 ```
 
    * Enlive uses pure HTML files and then selectors to fill in actual values
+```html
+<html>
+  <head><title>Page Title</title></head>
+  <body>
+    <h1>Page Title</h1>
+  </body>
+</html>
+```
+```clojure
+(html/deftemplate post-page "post.html" [values]
+  [:title]         (html/content (:title values))
+  [:h1]            (html/content (:title values)))
+
+; Then calling with value map
+(reduce str (post-page {:title "My title"}))
+```
+Produces
+```clojure
+<html>
+  <head><title>My title</title></head>
+  <body>
+    <h1>My title</h1>
+  </body>
+</html>
+```
 
 #### Destructuring
 * Anywhere names are bound, you can nest a vector or map to destructure a collection and bind only specific elements of the collection
@@ -463,6 +490,8 @@ keymap ; => {:a 1, :b 2, :c 3}
 ```
 
 * More examples http://blog.jayfields.com/2010/07/clojure-destructuring.html
+
+
 
 
 
