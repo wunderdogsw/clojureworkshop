@@ -495,7 +495,7 @@ Produces
 ### Step 15 - Form validation
 * There are nice libraries for form validation like https://github.com/leonardoborges/bouncer
 * But we'll do poor man's version with get parameter
-* Handy option to `if` is `when` if the else part can default to `nil`
+* Handy option to `if` is `when` if the else part can default `nil`
 ```clojure
 (when true :yay)
 ; => :yay
