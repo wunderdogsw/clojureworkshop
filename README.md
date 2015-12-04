@@ -65,13 +65,13 @@ TODO is that correct?
 ```
 lein auto kibit
 ```
-* Start a new midje autotest process in a terminal (yes, midje works without lein-auto)
+* Start a new midje autotest process in a terminal
 ```
 lein midje :autotest
 ```
 
 ### Step 3 - Setup live editing and start server
-* Setup remote REPL in `project.clj` by adding following key pair to `:ring´
+* Setup remote REPL in `project.clj` by adding following key pair to `:ring`
 ```clojure
 :nrepl {:start? true
         :port 8888}
@@ -137,7 +137,7 @@ lein ring server-headless
 * Create a function that fulfills the tests
     * Require `sha1` function from `pandect.algo.sha1` in `core` namespace
     * Apply the function to the bytes of given string
-        * Java interop Lesson 1 - using methods: `(.getBytes str)`
+        * Java interop using methods: `(.getBytes str)`
 
 ### Step 7 - Create a POST endpoint
 * Disable anti-forgery from default settings in `app` definition
