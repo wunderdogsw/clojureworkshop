@@ -257,7 +257,8 @@ keymap ; => {:a 1, :b 2, :c 3}
 
 
 
-### Step 6 - Java interop
+### Step 6 - Creating a sha and Java interop
+* In this tutorial we create the short URL by taking a sha1 of the full URL and cutting it to 7 letters
 * By convention transformation functions are named like `input->output`
 * Pretty good style guide can be found from here: https://github.com/bbatsov/clojure-style-guide
 * Java interop
