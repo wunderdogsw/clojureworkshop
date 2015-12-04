@@ -29,6 +29,7 @@ Like Maven but better.
 
 ### Step 0 - Clone the repo and go to beginning
     git clone https://<username>@bitbucket.org/wunderdogsw/clojureworkshop.git
+    cd clojureworkshop
     git checkout -b tutorial step_0
     rm -fr shorturl
 
