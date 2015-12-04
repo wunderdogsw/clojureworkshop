@@ -21,7 +21,7 @@ Like Maven but better.
 
 ### Clojure documentation
 * Official site http://clojure.org/
-* Guide and search for core functions and forms http://conj.io/
+* Cheatsheet and search for core functions and forms http://jafingerhut.github.io/cheatsheet/grimoire/cheatsheet-tiptip-cdocs-summary.html
 * Style guide https://github.com/bbatsov/clojure-style-guide
 * A categorised directory of libraries and tools for Clojure http://www.clojure-toolbox.com/
 
