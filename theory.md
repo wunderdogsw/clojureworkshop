@@ -273,6 +273,9 @@ keymap ; => {:a 1, :b 2, :c 3}
 ; => "Mac OS X" 
 ```
 
+
+
+
 ### Step 7 - Ring middleware wrapping
 * `wrap-defaults` provides sane defaults for running ring service
 * In this tutorial we disable the CSRF check to make the development more easy
@@ -309,7 +312,145 @@ keymap ; => {:a 1, :b 2, :c 3}
 ; => 2
 ```
 
-## Destructuring
+
+
+
+### Step 8 - Predicates or functions that return a boolean
+* Functions that test for a condition and return a boolean should have name that ends in a question mark
+* For example `nil?`, `empty?` `valid?`
+
+
+ 
+
+### Step 9 - Private functions
+* Functions can be made private by using `defn-` instead of `defn`
+* Private functions cannot be used through imports
+
+
+
+### Step 10 - Atoms
+* Clojure offers a few different kinds of ways to access data
+    * *Refs* are for Coordinated Synchronous access to "Many Identities".
+    * *Atoms* are for Uncoordinated synchronous access to a single Identity.
+    * *Agents* are for Uncoordinated asynchronous access to a single Identity.
+    * *Vars* are for thread local isolated identities with a shared default value.
+
+* Coordinated access is used when two Identities need to be changes together, the classic example being moving money from one bank account to another, it needs to either move completely or not at all.
+* Uncoordinated access is used when only one Identity needs to update, this is a very common case.
+* Synchronous access is where the call expects to wait until all the identities are settled before continuing.
+* Asynchronous access is "fire and forget" and let the Identity reach its new state in its own time.
+
+* Here is pretty good explanation of these and futures in Clojure: https://aphyr.com/posts/306-clojure-from-the-ground-up-state
+
+* We will be using atom
+```clojure
+(def atomic-map (atom {}))
+; => #'user/atomic-map
+
+(deref atomic-map)
+; => {}
+
+; or with a shorthand
+@atomic-map
+; => {}
+
+; A value in an atom can be changed with reset!
+(reset! atomic-map {:a 1})
+; => {:a 1}
+
+; But generally to change a value in an atom you should use swap! that takes the atom and a function as parameters.
+; The function is does that value change. Under the hood Clojure makes sure that the changes are synchronized.
+(swap! atomic-map (fn [m] assoc m :b 2))
+; => {:b 2, :a 1}
+
+; You can use an anonymous function shorthand #(...).
+; In #() % is used as the given parameter. You can have more than one parameter and then access them with %1 %2 etc.
+(swap! atomic-map #(assoc % :b 3))
+; => {:b 3, :a 1}
+```
+
+
+
+
+### Step 11 - Retrieving from a map with String keys
+```clojure
+(def string-map {"a" 1 "b" 2}})
+; => {"a" 1, "b" 2}
+
+(get string-map "a")
+; => 1
+
+;or
+(string-map "a")
+1
+```
+
+
+
+
+### Step 12 - Korma, tasty SQL for Clojure
+* Korma is a domain specific language for Clojure that takes the pain out of working with your favorite RDBMS.
+* http://sqlkorma.com/
+* In this workshop we use only the very basic parts of this library.
+
+```clojure
+(defdb prod (postgres {:db "korma"
+                       :user "db"
+                       :password "dbpass"}))
+
+(defentity address)
+(defentity user
+  (has-one address))
+
+(select user
+  (with address)
+  (fields :firstName :lastName :address.state)
+  (where {:email "korma@sqlkorma.com"}))
+```
+
+* We will use use-fixtures functionality from clojure.test to allow our tests to write to DB and then rollback after tests are run.
+* Example code is in the guide.
+
+
+
+
+### Step 13 - Serving static files
+* Compojure can serve static files from `resources/public`.
+* Redirecting is very straightforward as well.
+
+
+
+
+### Step 14 - Generating HTML
+* There are a few different ways to produce HTML
+   * Static files
+   * Hiccup to generate HTML from Clojure lists
+```clojure
+[:ul {:class "groceries"}
+ [:li "Apples"]
+ [:li "Bananas"]
+ [:li "Pears"]]
+```
+```html
+<ul class="groceries">
+  <li>Apples</li>
+  <li>Bananas</li>
+  <li>Pears</li>
+</ul>
+```
+
+   * Selmer uses templates with placeholders
+```html
+<head><title>{{ title }}</title></head>
+```
+```clojure
+(render-file "some.html"
+         {:title "Selemer"})
+```
+
+   * Enlive uses pure HTML files and then selectors to fill in actual values
+
+#### Destructuring
 * Anywhere names are bound, you can nest a vector or map to destructure a collection and bind only specific elements of the collection
 ```clojure
 (def dist [p]
@@ -317,9 +458,14 @@ keymap ; => {:a 1, :b 2, :c 3}
         y (second p)]
     (Math/sqrt (+ (* x x) (* y y)))))
 
-(def dist [[x y]]
+(def dist2 [[x y]]
   (Math/sqrt (+ (* x x) (* y y))))
 ```
+
+* More examples http://blog.jayfields.com/2010/07/clojure-destructuring.html
+
+
+
 
 # Sources
 https://github.com/adambard/learnxinyminutes-docs/blob/master/clojure.html.markdown
@@ -331,3 +477,7 @@ http://clojure.org/
 https://en.wikipedia.org/wiki/Clojure
 
 http://kendru.github.io/restful-clojure/2014/03/01/building-out-the-web-service-restful-clojure-part-3/
+
+http://stackoverflow.com/questions/9132346/clojure-differences-between-ref-var-agent-atom-with-examples
+
+http://radar.oreilly.com/2014/03/choosing-a-templating-language-in-clojure.html
