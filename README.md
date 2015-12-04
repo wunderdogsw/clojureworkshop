@@ -202,6 +202,9 @@ No URL found with 'test'
 ```
 
 ### Step 12 - Store data in database
+* Make sure your PostgreSQL instance is running
+    * If you installed psql with brew you can get the start command by running `brew info postgres`
+    * Something like `postgres -D /usr/local/var/postgres &`
 * Create database and table in PostgreSQL
     * Database can be created eg. from command line: `createdb shorturl`
     * The script `db/create_user_and_table.postgresql` can be found with tag `step_12_preparation`. Here is its content:
@@ -264,3 +267,14 @@ ALTER TABLE urls OWNER TO demo;
 * Next create a new function in `db` to retrieve all rows from `urls` and use that as an input to the function created in previous bullet
 * With this input create a list of short urls to their respective full urls and make them clickable links
     * Put the list under the form
+
+### Step 15 - Poor man's form validation
+* Change the `/new` route to work with browsers
+* On success redirect back to `"/"`
+* On error redirect to `"/"` but with a get parameter that is the input
+* Change the `"/"` to handle the URL parameter. You can access the parameter with destructuring `{{invalidurl :invalidurl} :params}`
+* Add optional error element with some nice message, set the value into the input and add some styles for the error message
+* Test can be checking that status is 302 and response headers Location contains the URL parameter
+
+
+# All done!

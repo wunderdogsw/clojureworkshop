@@ -19,15 +19,15 @@
    :body (not-found-content)})
 
 (defroutes app-routes
-  (GET "/" [] (h/index (c/get-all-urls)))
+  (GET "/" {{invalidurl :invalidurl} :params} (h/index (c/get-all-urls) invalidurl))
   (POST "/new" request
     (let [params (:params request)
           url (:url params)]
       (if (c/valid-url? url)
         (let [result (c/create-short-url url)]
           (c/store-url-to-db result url)
-          result)
-        {:status 400 :headers {} :body "Invalid URL"})))
+          (redirect "/"))
+        (redirect (str "/?invalidurl=" url)))))
   (GET "/:short" [short]
     (if-let [url (c/retrieve-url-from-db short)]
       (redirect url)

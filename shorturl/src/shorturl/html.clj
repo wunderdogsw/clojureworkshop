@@ -2,10 +2,10 @@
   (:require [hiccup.form :refer [form-to label text-field submit-button]]
             [hiccup.page :refer [html5 include-css]]))
 
-(defn- create-form []
+(defn- create-form [invalidurl]
   [:div.shorten-form (form-to [:post "/new"]
                               (label :url "URL:")
-                              (text-field :url)
+                              (text-field :url invalidurl)
                               (submit-button "Shorten!"))])
 
 (defn- create-url-list [url-map]
@@ -16,7 +16,7 @@
        " -> "
        [:a {:href url} url]])]])
 
-(defn index [url-map]
+(defn index [url-map invalidurl]
   (html5
     [:html
       {:lang "en"}
@@ -26,5 +26,6 @@
       [:body
         [:div
           [:h1 "Welcome to Shorturl"]
-          (create-form)
+          (when invalidurl [:p.error "URL should start with http:// or https:// and contain at least two parts separated by a dot."])
+          (create-form invalidurl)
           (create-url-list url-map)]]]]))

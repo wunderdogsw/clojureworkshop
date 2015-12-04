@@ -492,7 +492,16 @@ Produces
 * More examples http://blog.jayfields.com/2010/07/clojure-destructuring.html
 
 
+### Step 15 - Form validation
+* There are nice libraries for form validation like https://github.com/leonardoborges/bouncer
+* But we'll do poor man's version with get parameter
+* Handy option to `if` is `when` if the else part can default to `nil`
+```clojure
+(when true :yay)
+; => :yay
 
+(when false :nay)
+; => nil
 
 
 

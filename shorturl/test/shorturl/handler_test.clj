@@ -23,12 +23,13 @@
 
   (testing "input new valid URL"
     (let [response (app (new-post-request "http://wun.dog"))]
-      (is (= (:status response) 200))))
+      (is (= (:status response) 302))))
 
   (testing "input new invalid URL"
     (let [response (app (new-post-request "gaa"))]
-      (is (= (:status response) 400))
-      (is (= (:body response) "Invalid URL"))))
+      (is (= (:status response) 302))
+      (is (.contains (-> response :headers (get "Location"))
+                     "/?invalidurl=gaa"))))
 
   (testing "redirect"
     (let [_ (db/insert-url "test" "http://goo.gl")

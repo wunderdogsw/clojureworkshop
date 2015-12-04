@@ -10,3 +10,9 @@ body.not-found h1 {
 .all-urls li {
     list-style: none;
 }
+
+p.error {
+    background: red;
+    display: inline-block;
+    padding: 3px;
+}
