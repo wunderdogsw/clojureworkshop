@@ -211,7 +211,7 @@ keymap ; => {:a 1, :b 2, :c 3}
 * Leiningen does the heavy lifting for you
 * It fetches Clojure and other dependencies and you can use it to start a new project
 * Project and its dependencies are defined in `project.clj` file (no XML, yay!)
-
+* In `project.clj` you can have different profiles for example to have different dependencies for dev and normal builds
 
 
 
