@@ -1,8 +1,44 @@
 # Clojure workshop - the theory
 
 
-## Clojure basics
+## Clojure
+* A modern Lisp dialect (2007), designed by Rich Hickey
+* Uses the Java Virtual Machine as runtime platform
+* Promotes a Functional Programming style
+* Designed for Concurrency
 
+* Clojure is not a pure functional language (like Haskell)
+* Emphasis on immutable data structures: list, vector, set, map...
+* Emphasis on recursion rather than looping
+
+* Clojure provides easy access to the Java frameworks, with optional type hints and type inference, to ensure that calls to Java can avoid reflection.
+
+
+
+
+
+
+
+
+## About the logistics of code
+
+* Code is organized into namespaces containing related functions
+* One namespace equals one file in the file system
+* Source is read from top to bottom and you must define or declare value or function before using it
+* Names are usually lowercase and words are separated with dash `this-is-an-example`
+* If there is a dash in namespace name it translates to low dash in file name eg. `(ns my-namespace)` => `my_namespace.clj`
+
+
+## Use REPL and Leiningen
+* Read Eval Print Loop or REPL is a program to define and run code dynamically
+* Great for testing out things and coding with fast response loop
+* Leiningen is a build system like Maven but better
+
+
+
+
+
+## Some code examples
 ```clojure
 ; Comments start with semicolons.
 
@@ -25,6 +61,7 @@
 (- 2 1) ; => 1
 (* 1 2) ; => 2
 (/ 2 1) ; => 2
+(/ 1 2) ; => 1/2
 
 ; Equality is =
 (= 1 1) ; => true
@@ -77,6 +114,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (fn [] "Hello World")
 ; => #<user$eval2832$fn__2833 user$eval2832$fn__2833@d265d28>
+
+((fn [] "Hello World"))
+; => "Hello World"
 
 ; You can create a val using def
 (def x 1)
@@ -157,5 +197,23 @@ keymap ; => {:a 1, :b 2, :c 3}
 
 ```
 
+## Destructuring
+* Anywhere names are bound, you can nest a vector or map to destructure a collection and bind only specific elements of the collection
+```clojure
+(def dist [p]
+ (let [x (first p)
+ y (second p)]
+ (Math/sqrt (+ (* x x) (* y y)))))
+
+(def dist [[x y]]
+ (Math/sqrt (+ (* x x) (* y y))))
+```
+
 # Sources
 https://github.com/adambard/learnxinyminutes-docs/blob/master/clojure.html.markdown
+
+https://soft.vub.ac.be/~tvcutsem/invokedynamic/presentations/Clojure-intro.pdf
+
+http://clojure.org/
+
+https://en.wikipedia.org/wiki/Clojure
