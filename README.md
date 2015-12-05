@@ -781,6 +781,38 @@ Produces
   (Math/sqrt (+ (* x x) (* y y))))
 ```
 
+#### List comprehension
+```clojure
+(defn square-all [numbers]
+  (for [num numbers]
+    (* num num)))
+
+(square-all [1 2 3])
+; => (1 4 9)
+
+(defn square-odd [numbers]
+  (for [num numbers
+        :when (odd? num)]
+    (* num num)))
+
+(square-odd [1 2 3 4 5 6 7 8 9])
+; => (1 9 25 49 81)
+
+; produce a seq of all pairs drawn from two vectors
+(for [x ['a 'b 'c]
+      y [1 2 3]]
+  [x y])
+;=> ([a 1] [a 2] [a 3] [b 1] [b 2] [b 3] [c 1] [c 2] [c 3])
+
+; turn a map of key value pairs into list of strings
+(defn key-values->strings [key-values]
+  (for [[key value] key-values]
+    (str key "=" value)))
+
+(key-values->strings {"a" 1 "b" 2 "c" 3})
+; => ("a=1" "b=2" "c=3")
+```
+
 * More examples http://blog.jayfields.com/2010/07/clojure-destructuring.html
 
 
@@ -825,7 +857,128 @@ Produces
 # All done!
 
 
+# Bonus
 
+## Recursion examples
+```clojure
+
+(defn my-map [f coll]
+  (if (empty? coll) ; (seq coll) would be more idiomatic
+    []
+    (cons (f (first coll))
+          (my-map f (rest coll)))))
+
+(my-map inc [1 2 3 4])
+; => (2 3 4 5)
+
+; recur evaluates the exprs in order, then, in parallel, rebinds the bindings of
+; the recursion point to the values of the exprs.
+(defn print-seq [s]
+  (when (seq s)
+    (prn (first s))
+    (recur (rest s)))) ; calls print-seq with the result of (rest s), but with rebinds so that the stack doesn't grow
+
+(print-seq [1 2 3])
+; => 1
+; => 2
+; => 3
+; => nil
+```
+
+## Record
+```clojure
+;; Record
+(defrecord Person [fname lname address])
+-> user.Person
+
+(defrecord Address [street city state zip])
+-> user.Address
+
+(def stu (Person. "Stu" "Halloway"
+           (Address. "200 N Mangum"
+                      "Durham"
+                      "NC"
+                      27701)))
+-> #'user/stu
+
+(:lname stu)
+-> "Halloway"
+
+(-> stu :address :city)
+-> "Durham"
+
+(assoc stu :fname "Stuart")
+-> #:user.Person{:fname "Stuart", :lname "Halloway", :address #:user.Address{:street "200 N Mangum", :city "Durham", :state "NC", :zip 27701}}
+
+(update-in stu [:address :zip] inc)
+-> #:user.Person{:fname "Stu", :lname "Halloway", :address #:user.Address{:street "200 N Mangum", :city "Durham", :state "NC", :zip 27702}}
+
+;; Destructuring a record
+
+(defrecord Cat [age weight])
+
+(def Jasper (Cat. 2 10))
+
+(defn about-cat [{:keys [age weight]}]
+  (str age " yrs old and " weight " lbs"))
+
+(about-cat Jasper)
+->"2 yrs old and 10 lbs"
+```
+
+## multimethod
+```clojure
+; functions to create different shapes (output is a map)
+(defn rectangle [width height] {:Shape :Rectangle :width width :height height})
+(defn circle [radius] {:Shape :Circle :radius radius})
+
+; define some shapes
+(def a-rectangle (rect 4 13))
+(def a-circle (circle 12))
+
+; defining our multimethod "area"
+(defmulti area :Shape)
+
+(defmethod area :Rectangle [rectangle]
+    (* (:width rectangle) (:height rectangle)))
+
+(defmethod area :Circle [circle]
+    (* (. Math PI) (* (:radius circle) (:radius circle))))
+
+(defmethod area :default [x] :oops)
+
+
+; try it out
+(area a-rectangle)
+; => 52
+
+(area a-circle)
+; => 452.3893421169302
+
+(area {})
+; => :oops
+```
+
+## protocol
+```clojure
+; define a protocol with two abstract functions (bar is multi-arity function)
+(defprotocol Proto
+  (foo [this])
+  (bar [this] [this x]))
+
+; define a type that implements Proto
+(deftype Foo [a b c]
+  Proto
+  (foo [this] a)
+  (bar [this] b)
+  (bar [this x] (+ c x)))
+
+; define a instance of Foo
+(def my-foo (Foo. 1 2 3))
+
+(bar my-foo 42)
+=> 45
+```
 
 # Sources
 
