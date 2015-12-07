@@ -50,7 +50,7 @@ Like Maven but better.
 
 * Code is organized into namespaces containing related functions
 * One namespace equals one file in the file system
-* Source is read from top to bottom and you must define or declare value or function before using it
+* Source is read from top to bottom and you must define or declare a value or a function before using it
 * Names are usually lowercase and words are separated with dash `this-is-an-example`
 * If there is a dash in namespace name it translates to low dash in file name eg. `(ns my-namespace)` => `my_namespace.clj`
 
@@ -114,67 +114,63 @@ Like Maven but better.
 ; You can eval a quoted list
 (eval '(+ 1 2)) ; => 3
 
-; Types
-;;;;;;;;;;;;;
-
-; Clojure uses Java's object types for booleans, strings and numbers.
-; Use `class` to inspect them.
-(class 1) ; Integer literals are java.lang.Long by default
-(class 1.); Float literals are java.lang.Double
-(class ""); Strings always double-quoted, and are java.lang.String
-(class false) ; Booleans are java.lang.Boolean
-(class nil); The "null" value is called nil
-
-; If you want to create a literal list of data, use ' to stop it from
-; being evaluated
-'(+ 1 2) ; => (+ 1 2)
-; (shorthand for (quote (+ 1 2)))
-
-; You can eval a quoted list
-(eval '(+ 1 2)) ; => 3
-
 ; Functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Here is an anonymous function that doesn't take parameters and returns a string
 (fn [] "Hello World")
 ; => #<user$eval2832$fn__2833 user$eval2832$fn__2833@d265d28>
 
+; Call/apply an anonymous function
 ((fn [] "Hello World"))
 ; => "Hello World"
 
 ; You can define a value using def
-(def x 1)
+(def x 1) ; => #'user/x
+
 x ; => 1
 
-; You cand define a function using defn
+; Functions can be defined with a shorthand defn
 (defn hello-world [] "Hello World")
 
 ; The [] is the list of arguments for the function.
 (defn hello [name]
   (str "Hello " name))
+
 (hello "Steve") ; => "Hello Steve"
 
 ; You can have multi-variadic functions, too
 (defn hello2
   ([] "Hello World")
   ([name] (str "Hello " name)))
+
 (hello2 "Jake") ; => "Hello Jake"
 (hello2) ; => "Hello World"
 
-; Functions can pack extra arguments up in a seq for you
+; Functions can pack extra arguments up in a seq or list for you
 (defn count-args [& args]
   (str "You passed " (count args) " args: " args))
+
 (count-args 1 2 3) ; => "You passed 3 args: (1 2 3)"
 
 ; You can mix regular and packed arguments
 (defn hello-count [name & args]
   (str "Hello " name ", you passed " (count args) " extra args"))
+
 (hello-count "Finn" 1 2 3)
 ; => "Hello Finn, you passed 3 extra args"
 
-; Function description is given as string after parameters
-(defn my-reverse [input]
+; Function description is given as string before parameters
+(defn my-reverse
   "This function reverses given input."
+  [input]
   (reverse input))
+
+; To see a function description use doc
+(doc my-reverse)
+; => -------------------------
+; => user/my-reverse
+; => ([input])
+; =>   This function reverses given input.
 
 
 ; Maps
@@ -224,6 +220,9 @@ keymap ; => {:a 1, :b 2, :c 3}
 (class #{1 2 3}) ; => clojure.lang.PersistentHashSet
 (set [1 2 3 1 2 3 3 2 1 3 2 1]) ; => #{1 2 3}
 ```
+
+
+
 
 ## Tutorial
 
