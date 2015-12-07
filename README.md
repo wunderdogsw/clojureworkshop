@@ -4,6 +4,7 @@
 
 ### Requirements
 Either use the provided virtual machine or install these tools
+
 * Java JDK (at least version 6) http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 * Leiningen http://leiningen.org/
 * PostgreSQL http://www.postgresql.org/
@@ -979,6 +980,19 @@ Produces
 (bar my-foo 42)
 => 45
 ```
+
+
+
+
+# Extras
+
+* Solve http://adventofcode.com/ with Closure
+* http://www.4clojure.com/ A lot of problems that get more difficult gradually. I recommend saving your solutions to a file after the trivial problems.
+* http://clojurescriptkoans.com/ Syntax is very similar with Clojure. A lot of small problems (sometimes they are a bit esoteric).
+* Come up with a new feature to the short URL service and implement it!
+
+
+
 
 # Sources
 
