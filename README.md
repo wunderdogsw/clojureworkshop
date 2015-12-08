@@ -173,6 +173,18 @@ x ; => 1
 ; =>   This function reverses given input.
 
 
+; Common mistakes
+;;;;;;;;;;;;;;;;;;;;;;
+; Trying to call/apply something that is not a function
+(1 1)
+; => ClassCastException java.lang.Long cannot be cast to clojure.lang.IFn
+; "IFn" is the interface of a Clojure function
+
+; Forgetting parentheses when calling a function
+(let [x 1] inc x) ; => 1
+(let [x 1] (inc x)) ; => 2
+
+
 ; Maps
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Maps can use any hashable type as a key, but usually keywords are best
@@ -257,8 +269,8 @@ keymap ; => {:a 1, :b 2, :c 3}
     * IDEA: Settings > Editor > General > Smart Keys > Use structural editing
     * Emacs: disable-paredit-mode
 * Open project.clj
-* Leiningen project not registered -> Add project
-* Add midje as dev dependency and midje lein-midje, lein-kibit and lein-auto as dev plugin
+* "Leiningen project not registered" -> Add project
+* Add midje as dev dependency and lein-midje, lein-kibit and lein-auto as dev plugin
 ```clojure
 {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                       [ring/ring-mock "0.3.0"]
@@ -285,10 +297,12 @@ lein midje :autotest
 ## Step 3
 
 ### Theory - Running things
-* Our example web application stack goes like this:
+* Our example web application stack will be like this:
     * Jetty
     * ring - HTTP server abstraction
     * Compojure - A concise routing library for Ring/Clojure
+    * PostgreSQL as a database and SQL Korma librarry to access it
+    * Hiccup library to generate HTML
 
 
 ### Practice - Setup live editing and start server
@@ -303,7 +317,7 @@ lein ring server-headless
 ```
 * Check your service from a browser http://localhost:3000
 * Remote to server
-    * Edit configurations...
+    * In IDEA: Edit configurations...
     * Host: localhost
     * Port: 8888
     * Click OK to open new REPL
