@@ -639,10 +639,9 @@ No URL found with 'test'
 ## Step 12
 
 ### Theory - Korma, tasty SQL for Clojure
-* Korma is a domain specific language for Clojure that takes the pain out of working with your favorite RDBMS.
-* http://sqlkorma.com/
-* In this workshop we use only the very basic parts of this library.
-
+* Korma is a domain specific language for Clojure that takes the pain out of working with your favorite RDBMS
+* In this workshop we use only the very basic parts of this library
+* Here is an example from their own site http://sqlkorma.com/
 ```clojure
 (defdb prod (postgres {:db "korma"
                        :user "db"
@@ -658,14 +657,15 @@ No URL found with 'test'
   (where {:email "korma@sqlkorma.com"}))
 ```
 
-* We will use use-fixtures functionality from clojure.test to allow our tests to write to DB and then rollback after tests are run.
-* Example code is in the guide.
+* We will use use-fixtures functionality from clojure.test to allow our tests to write to DB and then rollback after tests are run
+* Example code is in the guide
+* There are a few different database migration libraries but we won't be using any in this tutorial
 
 
 ### Practice - Store data in database
 * Make sure your PostgreSQL instance is running
     * If you installed psql with brew you can get the start command by running `brew info postgres`
-    * Something like `postgres -D /usr/local/var/postgres &`
+    * It is something like `postgres -D /usr/local/var/postgres &`
 * Create database and table in PostgreSQL
     * Database can be created eg. from command line: `createdb shorturl`
     * The script `db/create_user_and_table.postgresql` can be found with tag `step_12_preparation`. Here is its content:
@@ -694,6 +694,11 @@ ALTER TABLE urls OWNER TO demo;
 
 * Create tests and implementation to a new namespace `shorturl.db`
     * Add `[korma "0.4.2"]` and `[org.postgresql/postgresql "9.4-1205-jdbc42"]` to project dependecies
+    * In implementation you'll need at least `defdb` and `postgres` from `korma.db` and `defentity fields insert select where values` from `korma.core`
+        * Define a new entity
+        * Create functions to insert a new row and to select by short value
+        * Replace earlier retrieve and store functions in handler
+    * Read http://sqlkorma.com/docs for examples
     * In tests you can use the following code to rollback after tests that change the data
 ```clojure
 (defn with-rollback
@@ -707,23 +712,20 @@ ALTER TABLE urls OWNER TO demo;
 (use-fixtures :each with-rollback)
 ```
 
-* In implementation you'll need at least `defdb` and `postgres` from `korma.db` and `defentity fields insert select where values` from `korma.core`
-* Read http://sqlkorma.com/docs for examples
-
 
 
 
 ## Step 13
 
 ### Theory - Serving static files
-* Compojure can serve static files from `resources/public`.
-* Redirecting is very straightforward as well.
+* Compojure can serve static files from `resources/public`
+* Redirecting is very straightforward as well
 
 
 ### Practice - Redirect and serve static files
 * Make the short URL address to redirect when address is found. There is a `redirect` function in `ring.util.response` namespace.
 * Then create `404.html` file in `resources/public` directory
-* You can also create css file under `public` eg. `resources/public/styles/shorturl.css` and then link to it in HTML `<link rel="stylesheet" href="styles/shorturl.css"/>`
+* You can also create a CSS file under `public` eg. `resources/public/styles/shorturl.css` and then link to it in HTML `<link rel="stylesheet" href="styles/shorturl.css"/>`
 * Add `(route/resources "/")` to defroutes to map `resources/public` directory to root in URL
 * Then modify `not-found` and failed short URL address to return appropriate HTML content
     * Hint: `slurp` reads different sources and returns the content as a string
@@ -736,23 +738,23 @@ ALTER TABLE urls OWNER TO demo;
 
 ### Theory - Generating HTML
 * There are a few different ways to produce HTML
-   * Static files
-   * Hiccup to generate HTML from Clojure lists
+   * Static files as in previous step
+   * Hiccup to generate HTML from Clojure lists (we will be using this)
 ```clojure
-[:ul {:class "groceries"}
+[:ul.groceries {:data-type "fruits"}
  [:li "Apples"]
  [:li "Bananas"]
  [:li "Pears"]]
 ```
 ```html
-<ul class="groceries">
+<ul class="groceries" data-type="fruits">
   <li>Apples</li>
   <li>Bananas</li>
   <li>Pears</li>
 </ul>
 ```
 
-   * Selmer uses templates with placeholders
+   * Selmer uses HTML templates with placeholders
 ```html
 <head><title>{{ title }}</title></head>
 ```
@@ -761,7 +763,7 @@ ALTER TABLE urls OWNER TO demo;
          {:title "Selemer"})
 ```
 
-   * Enlive uses pure HTML files and then selectors to fill in actual values
+   * Enlive uses pure HTML files with selectors to fill in actual values
 ```html
 <html>
   <head><title>Page Title</title></head>
@@ -772,16 +774,16 @@ ALTER TABLE urls OWNER TO demo;
 ```
 ```clojure
 (html/deftemplate post-page "post.html" [values]
-  [:title]         (html/content (:title values))
+  [:title]         (html/content (:page-title values))
   [:h1]            (html/content (:title values)))
 
 ; Then calling with value map
-(reduce str (post-page {:title "My title"}))
+(reduce str (post-page {:title "My title" :page-title "My page"}))
 ```
 Produces
-```clojure
+```html
 <html>
-  <head><title>My title</title></head>
+  <head><title>My page</title></head>
   <body>
     <h1>My title</h1>
   </body>
@@ -791,14 +793,25 @@ Produces
 #### Destructuring
 * Anywhere names are bound, you can nest a vector or map to destructure a collection and bind only specific elements of the collection
 ```clojure
-(def dist [p]
-  (let [x (first p)
-        y (second p)]
+; Using let to get first and second elements from input
+(defn dist [input]
+  (let [x (first input)
+        y (second input)]
     (Math/sqrt (+ (* x x) (* y y)))))
 
-(def dist2 [[x y]]
+; Using destructuring
+(defn dist2 [[x y]]
   (Math/sqrt (+ (* x x) (* y y))))
+
+(def x-and-y [1 2])
+
+(dist2 x-and-y)
+; => 2.23606797749979
+
+; If given parameter had more than two elements the extra elements would just be ignored.
 ```
+
+* More examples can be found here: http://blog.jayfields.com/2010/07/clojure-destructuring.html
 
 #### List comprehension
 ```clojure
@@ -832,8 +845,6 @@ Produces
 ; => ("a=1" "b=2" "c=3")
 ```
 
-* More examples http://blog.jayfields.com/2010/07/clojure-destructuring.html
-
 
 ### Practice - Dynamic HTML with Hiccup
 * Add `[hiccup "1.0.5"]` to project dependecies
@@ -864,11 +875,11 @@ Produces
 
 ### Practice - Poor man's form validation
 * Change the `/new` route to work with browsers
-* On success redirect back to `"/"`
-* On error redirect to `"/"` but with a get parameter that is the input
-* Change the `"/"` to handle the URL parameter. You can access the parameter with destructuring `{{invalidurl :invalidurl} :params}`
-* Add optional error element with some nice message, set the value into the input and add some styles for the error message
-* Test can be checking that status is 302 and response headers Location contains the URL parameter
+    * On success redirect back to `"/"`
+    * On error redirect to `"/"` but with a get parameter that is the input
+    * Change the `"/"` to handle the URL parameter. You can access the parameter with destructuring a map like this `{{invalidurl :invalidurl} :params}`
+    * Add optional error element with some nice message, set the value into the input and add some styles for the error message
+    * Test can check that status is 302 and response header Location contains the URL parameter
 
 
 
@@ -902,35 +913,39 @@ Produces
 ; => 2
 ; => 3
 ; => nil
+
+; Did you know that when is a macro of (if .. do ..)
+(macroexpand '(when 1 2 3 4))
+; => (if 1 (do 2 3 4))
 ```
 
 ## Record
 ```clojure
 ;; Record
 (defrecord Person [fname lname address])
--> user.Person
+; => user.Person
 
 (defrecord Address [street city state zip])
--> user.Address
+; => user.Address
 
 (def stu (Person. "Stu" "Halloway"
            (Address. "200 N Mangum"
                       "Durham"
                       "NC"
                       27701)))
--> #'user/stu
+; => #'user/stu
 
 (:lname stu)
--> "Halloway"
+; => "Halloway"
 
 (-> stu :address :city)
--> "Durham"
+; => "Durham"
 
 (assoc stu :fname "Stuart")
--> #:user.Person{:fname "Stuart", :lname "Halloway", :address #:user.Address{:street "200 N Mangum", :city "Durham", :state "NC", :zip 27701}}
+; => #:user.Person{:fname "Stuart", :lname "Halloway", :address #:user.Address{:street "200 N Mangum", :city "Durham", :state "NC", :zip 27701}}
 
 (update-in stu [:address :zip] inc)
--> #:user.Person{:fname "Stu", :lname "Halloway", :address #:user.Address{:street "200 N Mangum", :city "Durham", :state "NC", :zip 27702}}
+; => #:user.Person{:fname "Stu", :lname "Halloway", :address #:user.Address{:street "200 N Mangum", :city "Durham", :state "NC", :zip 27702}}
 
 ;; Destructuring a record
 
@@ -939,10 +954,10 @@ Produces
 (def Jasper (Cat. 2 10))
 
 (defn about-cat [{:keys [age weight]}]
-  (str age " yrs old and " weight " lbs"))
+  (str age " years old and weights " weight " lbs"))
 
 (about-cat Jasper)
-->"2 yrs old and 10 lbs"
+; => "2 years old and weights 10 lbs"
 ```
 
 ## multimethod
@@ -1004,7 +1019,7 @@ Produces
 
 # Extras
 
-* Solve http://adventofcode.com/ with Closure
+* Solve http://adventofcode.com/ with Clojure
 * http://www.4clojure.com/ A lot of problems that get more difficult gradually. I recommend saving your solutions to a file after the trivial problems.
 * http://clojurescriptkoans.com/ Syntax is very similar with Clojure. A lot of small problems (sometimes they are a bit esoteric).
 * Come up with a new feature to the short URL service and implement it!
