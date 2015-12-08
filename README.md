@@ -282,7 +282,7 @@ keymap ; => {:a 1, :b 2, :c 3}
 * Project directory right click -> Create REPL for shorturl
 * Project directory right click -> Run REPL for shorturl
 * Play with REPL
-* Start a new kibit autotest process in a terminal
+* Start a new kibit process with lein-auto in a terminal
 ```
 lein auto kibit
 ```
@@ -303,7 +303,7 @@ lein midje :autotest
     * Compojure - A concise routing library for Ring/Clojure
     * PostgreSQL as a database and SQL Korma librarry to access it
     * Hiccup library to generate HTML
-
+* We can use nREPL to remotely connect the server process and do things while the service is running
 
 ### Practice - Setup live editing and start server
 * Setup remote REPL in `project.clj` by adding following key pair to `:ring`
@@ -343,7 +343,8 @@ lein ring server-headless
    * `(:use some.namespace)` imports all public functions from that namespace
    * `(:require [some.namespace])` does not import anything by default but you can use
       * `(:require [some.namespace :refer [a-function b-function]])` to import specific functions
-      * `(:require [some.namepsace :refer :all])` to import all
+      * `(:require [some.namepsace :refer :all])` to import all public functions
+   * In most cases `require` is recommended over `use`
    * You can also name them for easier access `(:require [some.namespace :as cool])` and then use its functions in code `(cool/a-function)`
 
 
@@ -382,6 +383,7 @@ lein ring server-headless
          (fact actual => expected)))
 ```
 
+* We will be using both of these libraries throughout this tutorial
 
 ### Practice - Add midje test for core
 * Create a file `core_test.clj` under `test/shorturl`
@@ -406,9 +408,9 @@ lein ring server-headless
 
 ### Theory - Creating a sha and Java interop
 * In this tutorial we create the short URL by taking a sha1 of the full URL and cutting it to 7 letters
-* By convention transformation functions are named like `input->output`
-* Pretty good style guide can be found from here: https://github.com/bbatsov/clojure-style-guide
-* Java interop
+* By convention transformation functions are named like `input->output` eg. `xml->json`
+* Pretty good Clojure style guide can be found here: https://github.com/bbatsov/clojure-style-guide
+* Quick Java interop lesson
 ```clojure
 ; Method call
 (.toUpperCase "dog")
@@ -430,13 +432,13 @@ lein ring server-headless
 * To update dependencies restart server and reconnect
 * Restart midje autotest process as well
 * Create facts in `core-test`
-    * Hint: by convention transforming something to something else is named like this: `input->output`
+    * Hint: Remember the convention of naming transforming functions
     * Hashing `http://wunderdog.fi` should return `833e0acc54d46345120b2792de864bc4c623289b`
     * Hashing `http://goo.gl` should return `84704b78419ab3cecdce8251a702be1676e1622d`
 * Create a function that fulfills the tests
     * Require `sha1` function from `pandect.algo.sha1` in `core` namespace
     * Apply the function to the bytes of given string
-        * Java interop using methods: `(.getBytes str)`
+        * You can use Java interop to get the bytes from a string
 
 
 
@@ -449,7 +451,7 @@ lein ring server-headless
 * Ring plugins are handlers wrapped around your route definitions
 * Each handler does whatever it is designed to do and then pass the call forward
 ```clojure
-; Behold, our middleware! Note that it's common to prefix our middleware name
+; A loggign middleware example. Note that it's common to prefix our middleware name
 ; with "wrap-", since it surrounds any routes an other middleware "inside"
 (defn wrap-log-request [handler]
   (fn [req] ; return handler function
@@ -501,15 +503,15 @@ curl --data "url=http://wunderdog.fi" http://localhost:3000/new
 
 ### Theory - Predicates or functions that return a boolean
 * Functions that test for a condition and return a boolean should have name that ends in a question mark
-* For example `nil?`, `empty?` `valid?`
+* For example `nil?`, `empty?` and `valid?`
 
 
-### Practice - Validate link with regex
+### Practice - Validate link with a regex
 * Create test cases for URL validation function
 * Define `re-pattern` in start of core that validates a string is an URL
     * Eg. `"^https?://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"`
-* Implement a function that validates given input
-* Create test cases in `handler-test` for valid and invalid input
+* Implement a function that validates given input the pattern
+* Create test cases in `handler-test` for valid and invalid input (expect status code 400 and some kind of error message in the body)
 * Fix the endpoint to match new tests
 
 
@@ -535,64 +537,67 @@ curl --data "url=http://wunderdog.fi" http://localhost:3000/new
 
 ### Theory - Atoms
 * Clojure offers a few different kinds of ways to access data
-    * *Refs* are for Coordinated Synchronous access to "Many Identities".
-    * *Atoms* are for Uncoordinated synchronous access to a single Identity.
-    * *Agents* are for Uncoordinated asynchronous access to a single Identity.
-    * *Vars* are for thread local isolated identities with a shared default value.
+    * **Refs** are for Coordinated Synchronous access to "Many Identities".
+    * **Atoms** are for Uncoordinated synchronous access to a single Identity.
+    * **Agents** are for Uncoordinated asynchronous access to a single Identity.
+    * **Vars** are for thread local isolated identities with a shared default value.
 
-* Coordinated access is used when two Identities need to be changes together, the classic example being moving money from one bank account to another, it needs to either move completely or not at all.
-* Uncoordinated access is used when only one Identity needs to update, this is a very common case.
-* Synchronous access is where the call expects to wait until all the identities are settled before continuing.
-* Asynchronous access is "fire and forget" and let the Identity reach its new state in its own time.
+* **Coordinated** access is used when two Identities need to be changes together, the classic example being moving money from one bank account to another, it needs to either move completely or not at all.
+* **Uncoordinated** access is used when only one Identity needs to update, this is a very common case.
+
+* **Synchronous** access is where the call expects to wait until all the identities are settled before continuing.
+* **Asynchronous** access is "fire and forget" and let the Identity reach its new state in its own time.
 
 * Here is pretty good explanation of these and futures in Clojure: https://aphyr.com/posts/306-clojure-from-the-ground-up-state
 
-* We will be using atom
+* We will be using an atom
 ```clojure
 (def atomic-map (atom {}))
 ; => #'user/atomic-map
 
+; Access the value with deref
 (deref atomic-map)
 ; => {}
 
-; or with a shorthand
+; or with a shorthand @
 @atomic-map
 ; => {}
 
-; A value in an atom can be changed with reset!
+; A value in an atom can be reset with reset!
 (reset! atomic-map {:a 1})
 ; => {:a 1}
 
 ; But generally to change a value in an atom you should use swap! that takes the atom and a function as parameters.
-; The function is does that value change. Under the hood Clojure makes sure that the changes are synchronized.
-(swap! atomic-map (fn [m] assoc m :b 2))
+; The function does the value change. Under the hood Clojure makes sure that the changes are synchronized.
+(swap! atomic-map (fn [m] (assoc m :b 2)))
 ; => {:b 2, :a 1}
 
 ; You can use an anonymous function shorthand #(...).
-; In #() % is used as the given parameter. You can have more than one parameter and then access them with %1 %2 etc.
+; In #() % is used as the given parameter. You can have more than one input parameter. In that case they are used with %1 %2 etc.
 (swap! atomic-map #(assoc % :b 3))
 ; => {:b 3, :a 1}
 ```
 
 
 ### Practice - Save links to an atom
-* Define urls as an empty map atom
+* We will first save our short string to full URLs in an in-memory hash-map. Define urls as an empty map atom.
 ```clojure
 (def urls (atom {}))
 ```
 * Create tests that check adding new key values to the map
     * Put `against-background` state reset before the test cases
+    * More on setup and teardown on midje tests can be found here: https://github.com/marick/Midje/wiki/Setup,-Teardown,-and-State
 ```clojure
 (against-background [(before :contents (reset! urls {})
                              :after (reset! urls {}))]
-  facts...)
+  (facts...))
 ```
 * Implement a function that updates the `urls`
-    * Atoms are updated with `swap!` that takes the name of the atom and a function that updates its value
+    * Remember that atoms are updated with `swap!`
     * Hint: use anonymous function with `assoc` as the update function
     * You can check the contents of an atom with deref function or @ shorthand (eg. `@urls`)
 * In `handler` update the `/new` call so that it stores the value and then returns it
-    * `do` function is used for imperative style one statement after another execution. It also implies side effects happening inside it.
+    * `do` function is used for imperative style execute multiple statements sequentially. It also implies that side effects are happening inside it.
 
 
 
@@ -614,17 +619,17 @@ curl --data "url=http://wunderdog.fi" http://localhost:3000/new
 
 
 ### Practice - Create retrieval of a stored URL
-* Create retreve-url function in `core` and matching tests
-    * Hint: To access a value from an atom just deref it and then use it as you normally would `(get @urls input-value)`
+* Create retrieve-url function in `core` with matching tests
+    * Hint: To access a value from an atom just deref it and then use it as you normally would `(get @urls input-value)` or `(@urls input-value)`
     * Get from a map returns `nil` if nothing is found
-* Add at least fail test case to `handler-test` and create new get endpoint that returns found URL or 404
+* Add at least a fail test case to `handler-test` and create a new get endpoint that returns found URL or 404
 * This is what it should look like
 ```
 $ curl --data "url=https://wunder.dog" http://localhost:3000/new
 12cee14
 $ curl http://localhost:3000/12cee14
 https://wunder.dog
-$ curl http://localhost:3000/nothere
+$ curl http://localhost:3000/test
 No URL found with 'test'
 ```
 
