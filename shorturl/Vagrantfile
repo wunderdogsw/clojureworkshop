@@ -1,0 +1,41 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "ubuntu/trusty64"
+  config.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64"
+  config.vm.box_check_update = false
+
+  config.vm.network "forwarded_port", guest: 3000, host: 13000
+  config.vm.network "forwarded_port", guest: 5432, host: 15432
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = false
+    vb.memory = "2048"
+  end
+  config.vm.provision "shell", inline: <<-PROVISION
+    echo "[1/4] Installing language-pack-fi..."
+    sudo apt-get install language-pack-fi -y >> /var/log/clojure-box-provision.log 2>&1
+
+    echo "[2/4] Installing Java8..."
+    sudo echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | \
+    sudo /usr/bin/debconf-set-selections >> /var/log/clojure-box-provision.log 2>&1
+    sudo add-apt-repository ppa:webupd8team/java >> /var/log/clojure-box-provision.log 2>&1
+    sudo apt-get update &> /dev/null
+    sudo apt-get install oracle-java8-installer -y >> /var/log/clojure-box-provision.log 2>&1
+
+    echo "[3/4] Installing Postgresql 9.3..."
+    sudo apt-get install postgresql-9.3 -y >> /var/log/clojure-box-provision.log 2>&1
+
+    echo "[4/4] Leiningen 2..."
+    sudo wget -q https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein -O /usr/local/bin/lein &> /dev/null
+    sudo chmod 755 /usr/local/bin/lein
+    su - vagrant -c 'lein &> /dev/null'
+
+    echo "Box is ready!"
+    echo "============="
+    echo "$ vagrant ssh"
+    echo "$ lein repl"
+    echo " --- Happy coding ---"
+  PROVISION
+end
