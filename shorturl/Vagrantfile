@@ -39,8 +39,8 @@ Vagrant.configure(2) do |config|
     echo "Box is ready!"
     echo "============="
     echo "$ vagrant ssh"
-    echo "$ lein repl"
-    echo "$ cd /vagrant && lein ring server"
+    echo "$ cd /vagrant && lein ring server-headless"
+    echo "$ Open http//localhost:13000"
     echo " --- Happy coding ---"
   PROVISION
 end
