@@ -247,6 +247,14 @@ keymap ; => {:a 1, :b 2, :c 3}
 * Project and its dependencies are defined in `project.clj` file (no XML, yay!)
 * In `project.clj` you can have different profiles for example to have different dependencies for dev and normal builds
 
+### Vagrant setup if you fancy that
+```
+cd shorturl
+# brew cask install virtualbox vagrant
+vagrant up
+vagrant ssh
+cd /vagrant/ && lein ring server-headless
+```
 
 ### Step 0 - Clone the repo and go to beginning
     git clone https://<username>@bitbucket.org/wunderdogsw/clojureworkshop.git
@@ -422,7 +430,7 @@ lein ring server-headless
 
 ; .. macro expands into a member access (.) of the first member on the first argument, followed by the next member on the result, etc. For instance:
 (.. System (getProperties) (get "os.name"))
-; => "Mac OS X" 
+; => "Mac OS X"
 ```
 
 
