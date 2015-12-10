@@ -12,6 +12,7 @@
   :plugins [[lein-ring "0.9.7"]]
   :ring {:handler shorturl.handler/app
          :nrepl {:start? true
+                 :host 0.0.0.0
                  :port 8888}}
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
