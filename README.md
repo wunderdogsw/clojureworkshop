@@ -321,6 +321,7 @@ lein midje :autotest
 * Setup remote REPL in `project.clj` by adding following key pair to `:ring`
 ```clojure
 :nrepl {:start? true
+        :host "0.0.0.0"
         :port 8888}
 ```
 * Start server in terminal
