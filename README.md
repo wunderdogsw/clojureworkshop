@@ -248,9 +248,13 @@ keymap ; => {:a 1, :b 2, :c 3}
 * In `project.clj` you can have different profiles for example to have different dependencies for dev and normal builds
 
 ### Vagrant setup if you fancy that
+- Install virtualbox and vagrant to your laptop in case you don't have those
+``
+brew cask install virtualbox vagrant
+``
+
 ```
 cd shorturl
-# brew cask install virtualbox vagrant
 vagrant up
 vagrant ssh
 cd /vagrant/ && lein ring server-headless
