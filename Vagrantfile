@@ -30,7 +30,7 @@ Vagrant.configure(2) do |config|
     echo "[4/5] Creating database shorturl user and database..."
     sudo -u postgres createuser vagrant -s
     sudo -u postgres createdb shorturl
-    sudo -u postgres psql -f /vagrant/db/create_user_and_table.postgresql shorturl &> /dev/null
+    sudo -u postgres psql -f /vagrant/shorturl/db/create_user_and_table.postgresql shorturl &> /dev/null
 
     echo "[5/5] Leiningen 2..."
     sudo wget -q https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein -O /usr/local/bin/lein &> /dev/null
@@ -39,9 +39,10 @@ Vagrant.configure(2) do |config|
 
     echo "Box is ready!"
     echo "============="
+    echo "To run and access the application do the following:"
     echo "$ vagrant ssh"
-    echo "$ cd /vagrant && lein ring server-headless"
-    echo "$ Open http://localhost:13000"
+    echo "$ cd /vagrant/shorturl && lein ring server-headless"
+    echo "$ Direct browser on host machine to: http://localhost:13000"
     echo " --- Happy coding ---"
   PROVISION
 end
