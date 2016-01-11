@@ -29,7 +29,7 @@
 
 (defn retrieve-url-from-db [short]
   (let [results (db/find-by-short short)]
-    (when-not (empty? results)
+    (when (seq results)
       (:full_url (first results)))))
 
 (defn store-url-to-db [short url]

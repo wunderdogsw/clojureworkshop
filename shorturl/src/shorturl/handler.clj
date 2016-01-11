@@ -20,6 +20,10 @@
 
 (defroutes app-routes
   (GET "/" {{invalidurl :invalidurl} :params} (h/index (c/get-all-urls) invalidurl))
+  (GET "/:short" [short]
+    (if-let [url (c/retrieve-url-from-db short)]
+      (redirect url)
+      not-found-response))
   (POST "/new" request
     (let [params (:params request)
           url (:url params)]
@@ -28,10 +32,6 @@
           (c/store-url-to-db result url)
           (redirect "/"))
         (redirect (str "/?invalidurl=" url)))))
-  (GET "/:short" [short]
-    (if-let [url (c/retrieve-url-from-db short)]
-      (redirect url)
-      not-found-response))
   (route/resources "/")
   (route/not-found (not-found-content)))
 
