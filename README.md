@@ -1,5 +1,19 @@
 # Clojure workshop
 
+This is a workshop material to introduce developers to Clojure and web development with Clojure.
+No prior knowledge of Clojure is required but prior programming experience is highly recommended.
+
+The guide does not explain everything in detail since it was originally meant to be presented by someone who knows Clojure.
+
+The length of the workshop is over 8 hours if done step by step. You can of course just use it as an example to see a
+"full" web application done with Clojure (HTML rendering, HTTP request handling, database access).
+The finished application is a working URL shortener service.
+
+This material touches on select topics and for example ignores some parts of Clojure altogether.
+
+Much of the content is pieced together from different web sources. I tried to include all sources at the end of this document.
+
+
 ## Preparation
 
 ### Requirements
@@ -10,7 +24,11 @@ Either use the provided virtual machine or install these tools
 * PostgreSQL http://www.postgresql.org/
     * `brew install postgresql`
 
+Virtual machine provides JDK 8, Postgres DB and Leiningen. Leiningen must be installed to the host machine anyway.
+
 #### IDEs + extensions
+This guide is made with IDEA + Cursive in mind, but you are free to choose your favorite IDE.
+
 * IntelliJ IDEA + Cursive https://cursiveclojure.com/
 * Eclipse + Counterclockwise http://doc.ccw-ide.org/
 * Emacs + CIDER https://github.com/clojure-emacs/cider
@@ -254,10 +272,9 @@ brew cask install virtualbox vagrant
 ``
 
 ```
-cd shorturl
 vagrant up
 vagrant ssh
-cd /vagrant/ && lein ring server-headless
+cd /vagrant/shorturl && lein ring server-headless
 ```
 
 ### Step 0 - Clone the repo and go to beginning
@@ -275,8 +292,7 @@ cd /vagrant/ && lein ring server-headless
 
 #### IDEA
 * Create new project
-    * Select clojure
-    - [ ] clojure 1.7 jar?
+    * Select Clojure
 * Disable structural editing if you are not used to it
     * IDEA: Settings > Editor > General > Smart Keys > Use structural editing
     * Emacs: disable-paredit-mode
@@ -291,9 +307,12 @@ cd /vagrant/ && lein ring server-headless
                  [lein-kibit "0.1.2"]
                  [lein-auto "0.1.2"]]}}
 ```
-* Project directory right click -> Create REPL for shorturl
-* Project directory right click -> Run REPL for shorturl
-* Play with REPL
+* This is optional (in the following steps we will create a REPL connected to the server)
+    * Project directory right click -> Create REPL for shorturl
+    * Project directory right click -> Run REPL for shorturl
+    * Play with REPL
+
+
 * Start a new kibit process with lein-auto in a terminal
 ```
 lein auto kibit
@@ -324,15 +343,17 @@ lein midje :autotest
         :host "0.0.0.0"
         :port 8888}
 ```
+* WARNING: Do not open "0.0.0.0" in production.
 * Start server in terminal
 ```
 lein ring server-headless
 ```
-* Check your service from a browser http://localhost:3000
+* Check your service from a browser `http://localhost:3000`
+* If you are using the virtual machine the port is `13000`
 * Remote to server
     * In IDEA: Edit configurations...
-    * Host: localhost
-    * Port: 8888
+    * Host: `localhost`
+    * Port: `8888` or `18888`
     * Click OK to open new REPL
 * In `shorturl.handler` create a function that returns a string and use that function in the default route
     * Check your server response in a browser
@@ -900,7 +921,7 @@ Produces
 # All done!
 
 
-# Bonus
+# Bonus theory
 
 ## Recursion examples
 ```clojure
@@ -1032,9 +1053,9 @@ Produces
 
 # Extras
 
-* Solve http://adventofcode.com/ with Clojure
 * http://www.4clojure.com/ A lot of problems that get more difficult gradually. I recommend saving your solutions to a file after the trivial problems.
 * http://clojurescriptkoans.com/ Syntax is very similar with Clojure. A lot of small problems (sometimes they are a bit esoteric).
+* Solve http://adventofcode.com/ with Clojure
 * Come up with a new feature to the short URL service and implement it!
 
 
@@ -1055,3 +1076,9 @@ http://kendru.github.io/restful-clojure/2014/03/01/building-out-the-web-service-
 http://stackoverflow.com/questions/9132346/clojure-differences-between-ref-var-agent-atom-with-examples
 
 http://radar.oreilly.com/2014/03/choosing-a-templating-language-in-clojure.html
+
+
+
+
+# Feedback
+Any comments can be sent to ari (dot) paasonen (at) wunderdog (dot) fi
