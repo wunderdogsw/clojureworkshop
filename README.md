@@ -13,6 +13,7 @@ This material touches on select topics and for example ignores some parts of Clo
 
 Much of the content is pieced together from different web sources. I tried to include all sources at the end of this document.
 
+All the steps are tagged so if you get stuck you can check an example solution with eg. `git show step_8` or alternatively checking out a new branch from corresponding step tag.
 
 ## Preparation
 
